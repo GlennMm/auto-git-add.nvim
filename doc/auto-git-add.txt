@@ -1,0 +1,184 @@
+*auto-git-add.txt*	Automatically add new files to git
+
+Author: Your Name matsiweglenn@gmail.com>
+License: MIT
+
+==============================================================================
+CONTENTS						*auto-git-add-contents*
+
+1. Introduction			|auto-git-add-introduction|
+2. Installation			|auto-git-add-installation|
+3. Configuration		|auto-git-add-configuration|
+4. Commands			|auto-git-add-commands|
+5. Functions			|auto-git-add-functions|
+6. Examples			|auto-git-add-examples|
+7. Troubleshooting		|auto-git-add-troubleshooting|
+
+==============================================================================
+1. INTRODUCTION					*auto-git-add-introduction*
+
+auto-git-add.nvim is a Neovim plugin that automatically runs `git add` on
+newly created files when you're working in a git repository.
+
+Features:
+- Automatic git add for newly created files
+- Smart filtering with include/exclude patterns
+- File size limits to avoid adding huge files
+- Directory restrictions
+- Delayed processing to avoid rapid-fire operations
+- Configurable notifications
+- Multiple trigger modes
+
+==============================================================================
+2. INSTALLATION					*auto-git-add-installation*
+
+Using lazy.nvim: >
+    {
+      'your-username/auto-git-add.nvim',
+      event = 'VeryLazy',
+      config = function()
+        require('auto-git-add').setup()
+      end
+    }
+<
+
+Using packer.nvim: >
+    use {
+      'your-username/auto-git-add.nvim',
+      config = function()
+        require('auto-git-add').setup()
+      end
+    }
+<
+
+Manual setup in init.lua: >
+    require('auto-git-add').setup()
+<
+
+==============================================================================
+3. CONFIGURATION				*auto-git-add-configuration*
+
+Default configuration: >
+    require('auto-git-add').setup({
+      enabled = true,
+      trigger_mode = 'manual',
+      exclude_patterns = {
+        '%.tmp$', '%.log$', '%.swp$', '%.swo$', '%.DS_Store$',
+        '^%.git/', 'node_modules/', '__pycache__/',
+        '%.min%.js$', '%.min%.css$', '%.pyc$', '%.o$'
+      },
+      include_patterns = {},
+      show_notifications = true,
+      notification_level = vim.log.levels.INFO,
+      restrict_to_dirs = {},
+      max_file_size = 10 * 1024 * 1024, -- 10MB
+      delay_ms = 500,
+    })
+<
+
+*auto-git-add-trigger-modes*
+
+trigger_mode values:
+- 'all': Add any new file when saved
+- 'manual': Only add manually created files (default)
+- 'edit-command-only': Only add files created via :e/:edit
+
+*auto-git-add-patterns*
+
+exclude_patterns and include_patterns use Lua patterns.
+If include_patterns is empty, all files are included (subject to excludes).
+If include_patterns is set, only matching files are included.
+
+==============================================================================
+4. COMMANDS					*auto-git-add-commands*
+
+						*:AutoGitAddEnable*
+:AutoGitAddEnable	Enable the plugin
+
+						*:AutoGitAddDisable*
+:AutoGitAddDisable	Disable the plugin
+
+						*:AutoGitAddToggle*
+:AutoGitAddToggle	Toggle the plugin on/off
+
+						*:AutoGitAddStatus*
+:AutoGitAddStatus	Show current status and configuration in a floating window
+
+						*:AutoGitAddFile*
+:AutoGitAddFile [file]	Manually trigger auto git add for a file
+			If no file is provided, uses current file
+
+==============================================================================
+5. FUNCTIONS					*auto-git-add-functions*
+
+auto-git-add.setup({config})				*auto-git-add.setup()*
+    Setup the plugin with given configuration
+
+auto-git-add.enable()					*auto-git-add.enable()*
+    Enable the plugin
+
+auto-git-add.disable()					*auto-git-add.disable()*
+    Disable the plugin
+
+auto-git-add.toggle()					*auto-git-add.toggle()*
+    Toggle the plugin on/off
+
+auto-git-add.add_file_if_new(filepath)			*auto-git-add.add_file_if_new()*
+    Manually add a file if it's new and passes filters
+
+auto-git-add.status()					*auto-git-add.status()*
+    Return status information as a table
+
+auto-git-add.show_status()				*auto-git-add.show_status()*
+    Show status in a floating window
+
+==============================================================================
+6. EXAMPLES					*auto-git-add-examples*
+
+JavaScript/TypeScript project: >
+    require('auto-git-add').setup({
+      include_patterns = {
+        '%.js$', '%.ts$', '%.jsx$', '%.tsx$', '%.json$', '%.md$'
+      },
+      restrict_to_dirs = { 'src', 'lib', 'components' },
+      max_file_size = 5 * 1024 * 1024,
+    })
+<
+
+Python project: >
+    require('auto-git-add').setup({
+      include_patterns = { '%.py$', '%.md$', '%.yml$' },
+      exclude_patterns = { 
+        '__pycache__/', '%.pyc$', 'venv/', '%.env$'
+      },
+      restrict_to_dirs = { 'src', 'tests', 'docs' },
+    })
+<
+
+Disable default keymaps and set custom ones: >
+    vim.g.auto_git_add_no_default_mappings = true
+    
+    vim.keymap.set('n', '<leader>gA', '<cmd>AutoGitAddFile<CR>')
+    vim.keymap.set('n', '<leader>gT', '<cmd>AutoGitAddToggle<CR>')
+<
+
+==============================================================================
+7. TROUBLESHOOTING				*auto-git-add-troubleshooting*
+
+Plugin not working?
+1. Check |:AutoGitAddStatus| to see current configuration
+2. Verify you're in a git repository
+3. Check if files match your patterns
+4. Ensure git is installed and accessible
+
+Files not being added?
+- Check exclude_patterns and include_patterns
+- Verify max_file_size setting
+- Check restrict_to_dirs if set
+- Try different trigger_mode
+
+Too many notifications?
+Set show_notifications = false or change notification_level
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:
