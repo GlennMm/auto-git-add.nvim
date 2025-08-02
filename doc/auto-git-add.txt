@@ -34,7 +34,7 @@ Features:
 
 Using lazy.nvim: >
     {
-      'your-username/auto-git-add.nvim',
+      'GlennMm/auto-git-add.nvim',
       event = 'VeryLazy',
       config = function()
         require('auto-git-add').setup()
@@ -44,7 +44,7 @@ Using lazy.nvim: >
 
 Using packer.nvim: >
     use {
-      'your-username/auto-git-add.nvim',
+      'GlennMm/auto-git-add.nvim',
       config = function()
         require('auto-git-add').setup()
       end
