@@ -53,24 +53,40 @@ require('auto-git-add').setup()
 
 ### Using vim.pack (Neovim's built-in package manager)
 
-```bash
-# Create the pack directory structure
-mkdir -p ~/.config/nvim/pack/plugins/start
+Add this to your `init.lua`:
 
-# Clone the plugin
-cd ~/.config/nvim/pack/plugins/start
-git clone https://github.com/your-username/auto-git-add.nvim.git
+```lua
+-- Add the plugin
+vim.pack.add({
+  'https://github.com/your-username/auto-git-add.nvim'
+})
+
+-- Configure it
+require('auto-git-add').setup({
+  -- your configuration here
+})
 ```
 
-Then in your `init.lua`:
+For more advanced usage with version constraints:
+
 ```lua
+vim.pack.add({
+  {
+    src = 'https://github.com/your-username/auto-git-add.nvim',
+    name = 'auto-git-add',
+    -- Use latest stable version
+    version = vim.version.range('1.*'),
+  }
+})
+
 require('auto-git-add').setup()
 ```
 
-Alternatively, you can use git submodules for easier management:
-```bash
-# In your dotfiles repository
-git submodule add https://github.com/your-username/auto-git-add.nvim.git ~/.config/nvim/pack/plugins/start/auto-git-add.nvim
+Then restart Neovim with `:restart`. The plugin will be automatically installed and loaded.
+
+To update the plugin later, run:
+```vim
+:lua vim.pack.update()
 ```
 
 ## Configuration
